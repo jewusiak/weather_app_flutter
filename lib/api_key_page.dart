@@ -16,6 +16,7 @@ class ApiKeyPage extends StatelessWidget {
               style: TextStyle(color: Colors.white),
             ),
             backgroundColor: Colors.purple),
+
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
