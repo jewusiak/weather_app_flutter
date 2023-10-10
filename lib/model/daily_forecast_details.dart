@@ -83,7 +83,7 @@ class DailyForecasts {
   int? epochDate;
   Temperature? temperature;
   Day? day;
-  Night? night;
+  Day? night;
   List<String>? sources;
   String? mobileLink;
   String? link;
@@ -105,7 +105,7 @@ class DailyForecasts {
         ? new Temperature.fromJson(json['Temperature'])
         : null;
     day = json['Day'] != null ? new Day.fromJson(json['Day']) : null;
-    night = json['Night'] != null ? new Night.fromJson(json['Night']) : null;
+    night = json['Night'] != null ? new Day.fromJson(json['Night']) : null;
     sources = json['Sources'].cast<String>();
     mobileLink = json['MobileLink'];
     link = json['Link'];
@@ -207,28 +207,6 @@ class Day {
     data['HasPrecipitation'] = this.hasPrecipitation;
     data['PrecipitationType'] = this.precipitationType;
     data['PrecipitationIntensity'] = this.precipitationIntensity;
-    return data;
-  }
-}
-
-class Night {
-  int? icon;
-  String? iconPhrase;
-  bool? hasPrecipitation;
-
-  Night({this.icon, this.iconPhrase, this.hasPrecipitation});
-
-  Night.fromJson(Map<String, dynamic> json) {
-    icon = json['Icon'];
-    iconPhrase = json['IconPhrase'];
-    hasPrecipitation = json['HasPrecipitation'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['Icon'] = this.icon;
-    data['IconPhrase'] = this.iconPhrase;
-    data['HasPrecipitation'] = this.hasPrecipitation;
     return data;
   }
 }

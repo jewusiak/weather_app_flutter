@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app_flutter/api_client.dart';
 import 'package:weather_app_flutter/model/autocomplete_item.dart';
 import 'package:weather_app_flutter/model/current_conditions_details.dart';
 import 'package:weather_app_flutter/model/daily_forecast_details.dart';
 import 'package:weather_app_flutter/model/hourly_forecast_details.dart';
 import 'package:weather_app_flutter/model/weather_index.dart';
+import 'package:weather_app_flutter/widgets/indices_forecast_widget.dart';
+import 'package:weather_app_flutter/widgets/weather_forecast_bars_widget.dart';
+import 'package:weather_app_flutter/widgets/weather_hourly_table.dart';
 
 class DetailsPage extends StatefulWidget {
   final AutocompleteItem _requestedItem;
@@ -42,22 +46,43 @@ class _DetailsPageState extends State<DetailsPage> {
             return Align(
               alignment: Alignment.topCenter,
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(top: 25),
+                padding: EdgeInsets.only(top: 25, left: 20, right: 20),
                 child: Container(
                   width: 400,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.location_on_outlined, size: 18),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text("${widget._requestedItem.localizedName ?? "n/a"} (${widget._requestedItem.administrativeArea?.localizedName ?? ''}, ${widget._requestedItem.country?.localizedName ?? ''})")
+                        ],
+                      ),
                       Text(
-                          "Temp: ${_currentConditions?.temperature?.metric?.value ?? "n/a"} °C"),
+                        "${_currentConditions?.temperature?.metric?.value?.round() ?? "-"}°",
+                        style: GoogleFonts.spaceGrotesk(fontSize: 150),
+                      ),
                       Text(
-                          "Tomorrow temp: ${_dailyForecast?.dailyForecasts?[0].temperature?.minimum?.value ?? "n/a"} °C"),
-                      Text(
-                          "Next hourly temp: ${_hourlyForecast?.first.temperature?.value ?? "n/a"} °C @ ${_hourlyForecast?.first.dateTime ?? "n/a"}"),
-                      Text(
-                          "UV index: ${_uvIndexForecast?.first.value ?? "n/a"}/10.0 = ${_uvIndexForecast?.first.category ?? "n/a"}"),
-                      Text(
-                          "AQ index: ${_airQualityIndexForecast?.first.value ?? "n/a"}/10.0 = ${_airQualityIndexForecast?.first.category ?? "n/a"}"),
+                        "${_currentConditions?.weatherText ?? ""}",
+                        style: TextStyle(fontSize: 20),
+                      ),
+                      SizedBox(height: 20),
+                      Text("Next days"),
+                      SizedBox(height: 5,),
+                      WeatherForecastBarsWidget(_dailyForecast),
+                      SizedBox(height: 20),
+                      Text("Today"),
+                      SizedBox(height: 5,),
+                      WeatherHourlyTable(_hourlyForecast),
+                      SizedBox(height: 20),
+                      IndicesForecastWidget(_uvIndexForecast, _airQualityIndexForecast),
+                      SizedBox(height: 80,)
                     ],
                   ),
                 ),

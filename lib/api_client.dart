@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:weather_app_flutter/constants.dart';
+import 'package:weather_app_flutter/exceptions/exception_503.dart';
 import 'package:weather_app_flutter/model/autocomplete_item.dart';
 import 'package:weather_app_flutter/model/current_conditions_details.dart';
 import 'package:weather_app_flutter/model/daily_forecast_details.dart';
@@ -29,12 +30,8 @@ class ApiClient {
       'q': q,
       //'language': 'en-us'
     };
-    var res = await http
-        .get(Uri.parse(AUTOCOMPLETE_URL).replace(queryParameters: params));
-    if (res.statusCode != 200) {
-      throw RequestFailureException(
-          "Autocomplete request failed with code ${res.statusCode}. Message: ${res.body}");
-    }
+    var res = await makeGetRequest(
+        Uri.parse(AUTOCOMPLETE_URL).replace(queryParameters: params));
     var obj = jsonDecode(res.body);
     var autocompleteItems =
         (obj as List).map((e) => AutocompleteItem.fromJson(e));
@@ -48,12 +45,9 @@ class ApiClient {
       'details': 'true'
       //'language': 'en-us'
     };
-    var res = await http.get(Uri.parse(CURRENT_CONDITIONS_URL + locationId)
-        .replace(queryParameters: params));
-    if (res.statusCode != 200) {
-      throw RequestFailureException(
-          "Current conditions request failed with code ${res.statusCode}. Message: ${res.body}");
-    }
+    var res = await makeGetRequest(
+        Uri.parse(CURRENT_CONDITIONS_URL + locationId)
+            .replace(queryParameters: params));
     var obj = jsonDecode(res.body);
     return CurrentConditionsDetails.fromJson(obj[0]);
   }
@@ -66,12 +60,8 @@ class ApiClient {
       'metric': 'true'
       //'language': 'en-us'
     };
-    var res = await http.get(Uri.parse(DAILY_FORECAST_URL + locationId)
+    var res = await makeGetRequest(Uri.parse(DAILY_FORECAST_URL + locationId)
         .replace(queryParameters: params));
-    if (res.statusCode != 200) {
-      throw RequestFailureException(
-          "Daily forecast request failed with code ${res.statusCode}. Message: ${res.body}");
-    }
     var obj = jsonDecode(res.body);
     return DailyForecastDetails.fromJson(obj);
   }
@@ -84,12 +74,8 @@ class ApiClient {
       'metric': 'true'
       //'language': 'en-us'
     };
-    var res = await http.get(Uri.parse(HOURLY_FORECAST_URL + locationId)
+    var res = await makeGetRequest(Uri.parse(HOURLY_FORECAST_URL + locationId)
         .replace(queryParameters: params));
-    if (res.statusCode != 200) {
-      throw RequestFailureException(
-          "Hourly forecast request failed with code ${res.statusCode}. Message: ${res.body}");
-    }
     var obj = jsonDecode(res.body);
     var forecastItems =
         (obj as List).map((e) => HourlyForecastDetails.fromJson(e));
@@ -103,15 +89,24 @@ class ApiClient {
       'details': 'false'
       //'language': 'en-us'
     };
-    var res = await http.get(Uri.parse("$INDEX_FORECAST_URL$locationId/$indexId")
-        .replace(queryParameters: params));
-    if (res.statusCode != 200) {
-      throw RequestFailureException(
-          "Index forecast request failed with code ${res.statusCode}. Message: ${res.body}");
-    }
+    var res = await makeGetRequest(
+        Uri.parse("$INDEX_FORECAST_URL$locationId/$indexId")
+            .replace(queryParameters: params));
     var obj = jsonDecode(res.body);
     var forecastItems =
         (obj as List).map((e) => WeatherIndex.fromJson(e));
     return forecastItems;
+  }
+
+  static Future<http.Response> makeGetRequest(Uri uri) async {
+    var res = await http.get(uri);
+    if ([503, 403, 401].contains(res.statusCode)) {
+      throw Exception503();
+    } else if (res.statusCode != 200) {
+      throw RequestFailureException(
+          "Current conditions request failed with code ${res.statusCode}. Message: ${res.body}");
+    }
+
+    return res;
   }
 }
