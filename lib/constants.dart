@@ -1,3 +1,3 @@
 class Constants {
-  static const String API_KEY = "";
+  static String API_KEY = "";
 }
