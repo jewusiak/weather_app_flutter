@@ -4,6 +4,8 @@ Weather app made throughout one of the courses at Warsaw University of Technolog
 
 Uses Accuweather API to get basic weather info (current conditions, 5 day forecast, 12 hr forecast). Provides autocompletion feature for location search.
 
+Presentation is available on Youtube: [https://youtu.be/lnhdpTlIVm4](https://youtu.be/lnhdpTlIVm4)
+
 ## Getting Started
 
 ### Building
