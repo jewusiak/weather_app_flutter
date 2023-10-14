@@ -4,7 +4,7 @@ class CurrentConditionsDetails {
   String? weatherText;
   int? weatherIcon;
   bool? hasPrecipitation;
-  Null? precipitationType;
+  String? precipitationType;
   bool? isDayTime;
   Temperature? temperature;
   Temperature? realFeelTemperature;

@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
   Future handleSelect(AutocompleteItem? selectedOption) async {
     if (selectedOption == null) return;
     await Navigator.of(context).push(MaterialPageRoute(
-      builder: (context) => DetailsPage(selectedOption!),
+      builder: (context) => DetailsPage(selectedOption),
     ));
   }
 }

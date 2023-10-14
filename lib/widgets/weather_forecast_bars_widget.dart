@@ -12,32 +12,20 @@ class WeatherForecastBarsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (_dailyForecast == null) return Container();
     try {
-      var low = double.maxFinite;
-      var high = double.maxFinite * -1.0;
-      _dailyForecast!.dailyForecasts!
-          .map((e) => e.temperature!)
-          .forEach((temp) {
-        if (temp.minimum!.value! < low) {
-          low = temp.minimum!.value!;
-        }
-        if (temp.maximum!.value! > high) {
-          high = temp.maximum!.value!;
-        }
-      });
       return Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: mapForecasts(low, high),
+        children: mapForecasts(),
       );
     } catch (e) {
       return Container();
     }
   }
 
-  List<Widget> mapForecasts(low, high) {
+  List<Widget> mapForecasts() {
     List<Widget> forecasts = [];
     _dailyForecast!.dailyForecasts!.forEach((e) {
-      forecasts.add(WeatherForecastColumn(e, low, high));
+      forecasts.add(WeatherForecastColumn(e));
       forecasts.add(SizedBox(
         width: 5,
       ));
@@ -56,11 +44,9 @@ class WeatherForecastBarsWidget extends StatelessWidget {
 }
 
 class WeatherForecastColumn extends StatelessWidget {
-  final double _low;
-  final double _high;
   final DailyForecasts _dailyForecast;
 
-  const WeatherForecastColumn(this._dailyForecast, this._low, this._high,
+  const WeatherForecastColumn(this._dailyForecast,
       {super.key});
 
   @override
